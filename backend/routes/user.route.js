@@ -6,6 +6,9 @@ import { JWT_SECRET } from "../config.js";
 import jwt from "jsonwebtoken";
 import { Account } from "../db/models/account.schema.js";
 
+import { authMiddleware } from "../middleware/auth.middleware.js";
+
+
 const router = Router()
 
 
@@ -71,6 +74,31 @@ router.route("/signin").post( async (req, res) => {
         Response: "User Login Success",
         token: token,
         user,
+    })
+} )
+
+// '/' update info route
+
+router.route("/bulk").get(authMiddleware, async (req, res) => {
+    const filter  = req.query.filter || ""
+
+    const users = await User.find({
+            $or: [
+                    {
+                        fullname: {
+                            "$regex": filter
+                        }
+                    }
+                ]
+    })
+
+    
+    res.status(201).json({
+        user: users.map( (user) => ({
+            username: user.username,
+            fullname: user.fullname,
+            _id: user._id
+        }) )
     })
 } )
 
