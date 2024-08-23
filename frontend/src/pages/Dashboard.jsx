@@ -11,9 +11,7 @@ function Dashboard() {
       <Balance value={10000}/>
       
       <Users />
-      
-      
-      <SendMoney />
+            
     </div>
   )
 }
